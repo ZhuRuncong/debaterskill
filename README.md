@@ -74,7 +74,10 @@ probability and a robustness mixture, both 0 by default.
 entity with `tab.enroll(Speaker('ana', mu=2.0, sigma=1.0))` or by passing
 constructed `Speaker` objects on first appearance.
 
-**Judges.** Attach `chair=Judge(name)` to debates, then:
+**Judges (experimental).** Not a standard feature; the blur model is
+unvalidated and its estimates are noisy for chairs with few rooms. Do not
+use it to rank or evaluate judges. Attach `chair=Judge(name)` to debates,
+then:
 
 ```python
 tab.fit_judges(rounds=2, tau=0.6)   # learn per-chair blur, refit
