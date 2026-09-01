@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=77", "pybind11>=2.11"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "debaterskill"
+version = "0.2.0"
+description = "TrueSkill Through Time for British Parliamentary debating, C++ core"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+
+[tool.setuptools]
+packages = ["debaterskill"]

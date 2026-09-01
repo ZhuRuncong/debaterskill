@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="58 372 860 362" width="860" height="362" font-family="'Latin Modern Roman','Computer Modern Roman','Times New Roman',Times,serif">
+  <style>
+    .ink   { stroke:#111; fill:none; stroke-width:1.15; }
+    .edge  { stroke:#111; fill:none; stroke-width:1.05; }
+    .stub  { stroke:#111; fill:none; stroke-width:1.05; stroke-dasharray:3 3; }
+    .grp   { stroke:#c2c2c2; fill:none; stroke-width:1; stroke-dasharray:4 4; }
+    .var   { fill:#fff; stroke:#111; stroke-width:1.3; }
+    .fac   { fill:#111; stroke:#111; stroke-width:1; }
+    .ttl   { font-size:14.5px; fill:#111; }
+    .nlab  { font-size:12.5px; fill:#111; font-style:italic; }
+    .flab  { font-size:10px; fill:#111; }
+    .key   { font-size:10.5px; fill:#666; }
+    .note  { font-size:10.5px; fill:#444; font-style:italic; }
+    .sub   { font-size:8px; font-style:normal; }
+  </style>
+  <rect x="58" y="372" width="860" height="362" fill="#fff"/>
+<!-- ============================ panel (b) ============================ -->
+
+  <!-- team grouping boxes -->
+  <rect class="grp" x="82"  y="398" width="136" height="196" rx="8"/>
+  <rect class="grp" x="272" y="398" width="136" height="196" rx="8"/>
+  <rect class="grp" x="462" y="398" width="136" height="196" rx="8"/>
+  <rect class="grp" x="652" y="398" width="136" height="196" rx="8"/>
+
+  <!-- skill chain stubs -->
+  <path class="stub" d="M108,384 V402 M192,384 V402 M298,384 V402 M382,384 V402 M488,384 V402 M572,384 V402 M678,384 V402 M762,384 V402"/>
+
+  <!-- speaker columns: skill -> beta -> performance -->
+  <path class="edge" d="M108,418 V498 M192,418 V498 M298,418 V498 M382,418 V498 M488,418 V498 M572,418 V498 M678,418 V498 M762,418 V498"/>
+  <!-- motion columns: prior -> motion -> sum -->
+  <path class="edge" d="M150,458 V538 M340,458 V538 M530,458 V538 M720,458 V538"/>
+  <!-- performances into the team sum -->
+  <path class="edge" d="M108,498 L150,538 M192,498 L150,538 M298,498 L340,538 M382,498 L340,538 M488,498 L530,538 M572,498 L530,538 M678,498 L720,538 M762,498 L720,538"/>
+  <!-- sum -> team performance -->
+  <path class="edge" d="M150,538 V578 M340,538 V578 M530,538 V578 M720,538 V578"/>
+  <!-- team performances into difference factors -->
+  <path class="edge" d="M150,578 L245,618 M340,578 L245,618 M340,578 L435,618 M530,578 L435,618 M530,578 L625,618 M720,578 L625,618"/>
+  <!-- difference factor -> d -> ordinal factor -->
+  <path class="edge" d="M245,618 V698 M435,618 V698 M625,618 V698"/>
+
+  <!-- factor squares: performance noise -->
+  <rect class="fac" x="101.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="185.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="291.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="375.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="481.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="565.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="671.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="755.5" y="451.5" width="13" height="13"/>
+  <!-- factor squares: motion priors -->
+  <rect class="fac" x="143.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="333.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="523.5" y="451.5" width="13" height="13"/>
+  <rect class="fac" x="713.5" y="451.5" width="13" height="13"/>
+  <!-- factor squares: team sums -->
+  <rect class="fac" x="143.5" y="531.5" width="13" height="13"/>
+  <rect class="fac" x="333.5" y="531.5" width="13" height="13"/>
+  <rect class="fac" x="523.5" y="531.5" width="13" height="13"/>
+  <rect class="fac" x="713.5" y="531.5" width="13" height="13"/>
+  <!-- factor squares: differences and order -->
+  <rect class="fac" x="238.5" y="611.5" width="13" height="13"/>
+  <rect class="fac" x="428.5" y="611.5" width="13" height="13"/>
+  <rect class="fac" x="618.5" y="611.5" width="13" height="13"/>
+  <rect class="fac" x="238.5" y="691.5" width="13" height="13"/>
+  <rect class="fac" x="428.5" y="691.5" width="13" height="13"/>
+  <rect class="fac" x="618.5" y="691.5" width="13" height="13"/>
+
+  <!-- skill nodes -->
+  <circle class="var" cx="108" cy="418" r="16"/><circle class="var" cx="192" cy="418" r="16"/>
+  <circle class="var" cx="298" cy="418" r="16"/><circle class="var" cx="382" cy="418" r="16"/>
+  <circle class="var" cx="488" cy="418" r="16"/><circle class="var" cx="572" cy="418" r="16"/>
+  <circle class="var" cx="678" cy="418" r="16"/><circle class="var" cx="762" cy="418" r="16"/>
+  <text class="nlab" x="108" y="422" text-anchor="middle">s<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="192" y="422" text-anchor="middle">s<tspan class="sub" dy="3">2</tspan></text>
+  <text class="nlab" x="298" y="422" text-anchor="middle">s<tspan class="sub" dy="3">3</tspan></text>
+  <text class="nlab" x="382" y="422" text-anchor="middle">s<tspan class="sub" dy="3">4</tspan></text>
+  <text class="nlab" x="488" y="422" text-anchor="middle">s<tspan class="sub" dy="3">5</tspan></text>
+  <text class="nlab" x="572" y="422" text-anchor="middle">s<tspan class="sub" dy="3">6</tspan></text>
+  <text class="nlab" x="678" y="422" text-anchor="middle">s<tspan class="sub" dy="3">7</tspan></text>
+  <text class="nlab" x="762" y="422" text-anchor="middle">s<tspan class="sub" dy="3">8</tspan></text>
+
+  <!-- performance nodes -->
+  <circle class="var" cx="108" cy="498" r="16"/><circle class="var" cx="192" cy="498" r="16"/>
+  <circle class="var" cx="298" cy="498" r="16"/><circle class="var" cx="382" cy="498" r="16"/>
+  <circle class="var" cx="488" cy="498" r="16"/><circle class="var" cx="572" cy="498" r="16"/>
+  <circle class="var" cx="678" cy="498" r="16"/><circle class="var" cx="762" cy="498" r="16"/>
+  <text class="nlab" x="108" y="502" text-anchor="middle">p<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="192" y="502" text-anchor="middle">p<tspan class="sub" dy="3">2</tspan></text>
+  <text class="nlab" x="298" y="502" text-anchor="middle">p<tspan class="sub" dy="3">3</tspan></text>
+  <text class="nlab" x="382" y="502" text-anchor="middle">p<tspan class="sub" dy="3">4</tspan></text>
+  <text class="nlab" x="488" y="502" text-anchor="middle">p<tspan class="sub" dy="3">5</tspan></text>
+  <text class="nlab" x="572" y="502" text-anchor="middle">p<tspan class="sub" dy="3">6</tspan></text>
+  <text class="nlab" x="678" y="502" text-anchor="middle">p<tspan class="sub" dy="3">7</tspan></text>
+  <text class="nlab" x="762" y="502" text-anchor="middle">p<tspan class="sub" dy="3">8</tspan></text>
+
+  <!-- motion nodes -->
+  <circle class="var" cx="150" cy="498" r="16"/><circle class="var" cx="340" cy="498" r="16"/>
+  <circle class="var" cx="530" cy="498" r="16"/><circle class="var" cx="720" cy="498" r="16"/>
+  <text class="nlab" x="150" y="502" text-anchor="middle">m<tspan class="sub" dy="3">cg</tspan></text>
+  <text class="nlab" x="340" y="502" text-anchor="middle">m<tspan class="sub" dy="3">og</tspan></text>
+  <text class="nlab" x="530" y="502" text-anchor="middle">m<tspan class="sub" dy="3">oo</tspan></text>
+  <text class="nlab" x="720" y="502" text-anchor="middle">m<tspan class="sub" dy="3">co</tspan></text>
+
+  <!-- team performance nodes -->
+  <circle class="var" cx="150" cy="578" r="16"/><circle class="var" cx="340" cy="578" r="16"/>
+  <circle class="var" cx="530" cy="578" r="16"/><circle class="var" cx="720" cy="578" r="16"/>
+  <text class="nlab" x="150" y="582" text-anchor="middle">T<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="340" y="582" text-anchor="middle">T<tspan class="sub" dy="3">2</tspan></text>
+  <text class="nlab" x="530" y="582" text-anchor="middle">T<tspan class="sub" dy="3">3</tspan></text>
+  <text class="nlab" x="720" y="582" text-anchor="middle">T<tspan class="sub" dy="3">4</tspan></text>
+
+  <!-- difference nodes -->
+  <circle class="var" cx="245" cy="658" r="16"/>
+  <circle class="var" cx="435" cy="658" r="16"/>
+  <circle class="var" cx="625" cy="658" r="16"/>
+  <text class="nlab" x="245" y="662" text-anchor="middle">d<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="435" y="662" text-anchor="middle">d<tspan class="sub" dy="3">2</tspan></text>
+  <text class="nlab" x="625" y="662" text-anchor="middle">d<tspan class="sub" dy="3">3</tspan></text>
+
+  <!-- team captions -->
+  <text class="flab" x="150" y="612" text-anchor="middle">CG &#183; 1st</text>
+  <text class="flab" x="340" y="612" text-anchor="middle">OG &#183; 2nd</text>
+  <text class="flab" x="530" y="612" text-anchor="middle">OO &#183; 3rd</text>
+  <text class="flab" x="720" y="612" text-anchor="middle">CO &#183; 4th</text>
+
+  <!-- ordinal factor labels -->
+  <text class="flab" x="245" y="718" text-anchor="middle">d<tspan class="sub" dy="3">1</tspan><tspan dy="-3"> &gt; &#949;</tspan></text>
+  <text class="flab" x="435" y="718" text-anchor="middle">d<tspan class="sub" dy="3">2</tspan><tspan dy="-3"> &gt; &#949;</tspan></text>
+  <text class="flab" x="625" y="718" text-anchor="middle">d<tspan class="sub" dy="3">3</tspan><tspan dy="-3"> &gt; &#949;</tspan></text>
+
+  <!-- parameter labels, shown once -->
+  <text class="flab" x="88" y="462" text-anchor="end">&#946;</text>
+  <text class="flab" x="150" y="446" text-anchor="middle" font-size="9">N(0, &#963;<tspan class="sub" dy="2">m</tspan><tspan dy="-2">&#178;)</tspan></text>
+
+  <!-- row keys -->
+  <text class="key" x="800" y="422">skills</text>
+  <text class="key" x="800" y="462">noise</text>
+  <text class="key" x="800" y="502">performances</text>
+  <text class="key" x="800" y="542">team sum</text>
+  <text class="key" x="800" y="582">team perf.</text>
+  <text class="key" x="800" y="622">subtract</text>
+  <text class="key" x="800" y="662">differences</text>
+  <text class="key" x="800" y="702">ranking</text>
+  <text class="key" x="800" y="392">skill chains</text>
+</svg>

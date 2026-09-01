@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="586 100 300 222" width="300" height="222" font-family="'Latin Modern Roman','Computer Modern Roman','Times New Roman',Times,serif">
+  <style>
+    .ink   { stroke:#111; fill:none; stroke-width:1.15; }
+    .edge  { stroke:#111; fill:none; stroke-width:1.05; }
+    .stub  { stroke:#111; fill:none; stroke-width:1.05; stroke-dasharray:3 3; }
+    .grp   { stroke:#c2c2c2; fill:none; stroke-width:1; stroke-dasharray:4 4; }
+    .var   { fill:#fff; stroke:#111; stroke-width:1.3; }
+    .fac   { fill:#111; stroke:#111; stroke-width:1; }
+    .ttl   { font-size:14.5px; fill:#111; }
+    .nlab  { font-size:12.5px; fill:#111; font-style:italic; }
+    .flab  { font-size:10px; fill:#111; }
+    .key   { font-size:10.5px; fill:#666; }
+    .note  { font-size:10.5px; fill:#444; font-style:italic; }
+    .sub   { font-size:8px; font-style:normal; }
+  </style>
+  <rect x="586" y="100" width="300" height="222" fill="#fff"/>
+<!-- ============================ panel (c) ============================ -->
+
+  <path class="edge" d="M648,130 V214 M748,130 V214 M648,214 L698,258 M748,214 L698,258"/>
+
+  <circle class="var" cx="648" cy="130" r="16"/>
+  <circle class="var" cx="748" cy="130" r="16"/>
+  <text class="nlab" x="648" y="134" text-anchor="middle">s<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="748" y="134" text-anchor="middle">s<tspan class="sub" dy="3">2</tspan></text>
+
+  <rect class="fac" x="641.5" y="165.5" width="13" height="13"/>
+  <rect class="fac" x="741.5" y="165.5" width="13" height="13"/>
+  <text class="flab" x="628" y="176" text-anchor="end">&#946;</text>
+
+  <circle class="var" cx="648" cy="214" r="16"/>
+  <circle class="var" cx="748" cy="214" r="16"/>
+  <text class="nlab" x="648" y="218" text-anchor="middle">p&#8242;<tspan class="sub" dy="3">1</tspan></text>
+  <text class="nlab" x="748" y="218" text-anchor="middle">p&#8242;<tspan class="sub" dy="3">2</tspan></text>
+
+  <rect class="fac" x="691.5" y="251.5" width="13" height="13"/>
+  <text class="flab" x="714" y="262">&#948;(p&#8242;<tspan class="sub" dy="3">1</tspan><tspan dy="-3"> &#8722; p&#8242;</tspan><tspan class="sub" dy="3">2</tspan><tspan dy="-3"> &#8722; g)</tspan></text>
+
+  <text class="note" x="600" y="296">The two skills are the same variables as in the room graph;</text>
+  <text class="note" x="600" y="311">g is the partners&#8217; speak gap, scaled per tournament.</text>
+
+  </svg>
