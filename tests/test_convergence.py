@@ -1,7 +1,7 @@
 """Inner-loop convergence of 3+-team rooms under the default sweep budget."""
 import pytest
 
-from debaterskill import Debate, Tab, Team, ballot
+from debaterskill import Debate, Tab, Team, observation
 from debaterskill import _core
 
 
@@ -23,9 +23,9 @@ def four_teams():
 def test_five_sweeps_is_not_converged():
     teams, result = four_teams(), [3.0, 2.0, 1.0, 0.0]
     _core.set_sweeps(5, 0.0)
-    _, legacy = ballot(teams, result, False, 0.0)
+    _, legacy = observation(teams, result, False, 0.0)
     _core.set_sweeps(64, 1e-12)
-    _, converged = ballot(teams, result, False, 0.0)
+    _, converged = observation(teams, result, False, 0.0)
     moved = max(abs(a[0] - b[0])
                 for ta, tb in zip(legacy, converged) for a, b in zip(ta, tb))
     assert moved > 0.0
@@ -34,9 +34,9 @@ def test_five_sweeps_is_not_converged():
 def test_converged_result_is_stable():
     teams, result = four_teams(), [3.0, 2.0, 1.0, 0.0]
     _core.set_sweeps(64, 1e-12)
-    _, a = ballot(teams, result, False, 0.0)
+    _, a = observation(teams, result, False, 0.0)
     _core.set_sweeps(200, 1e-15)
-    _, b = ballot(teams, result, False, 0.0)
+    _, b = observation(teams, result, False, 0.0)
     for ta, tb in zip(a, b):
         for x, y in zip(ta, tb):
             assert abs(x[0] - y[0]) <= 1e-11
@@ -45,16 +45,16 @@ def test_converged_result_is_stable():
 
 def test_sweep_histogram_records_convergence():
     _core.reset_sweep_hist()
-    ballot(four_teams(), [3.0, 2.0, 1.0, 0.0], False, 0.0)
+    observation(four_teams(), [3.0, 2.0, 1.0, 0.0], False, 0.0)
     hist = _core.sweep_hist()
     assert sum(hist) == 1
     used = next(k for k, v in enumerate(hist) if v)
     assert 1 < used < 64
 
 
-def test_two_team_ballot_needs_no_sweeps():
+def test_two_team_observation_needs_no_sweeps():
     _core.reset_sweep_hist()
-    ballot([[(0.0, 3.0, 1.0)], [(1.0, 3.0, 1.0)]], [1.0, 0.0], False, 0.0)
+    observation([[(0.0, 3.0, 1.0)], [(1.0, 3.0, 1.0)]], [1.0, 0.0], False, 0.0)
     assert sum(_core.sweep_hist()) == 0
 
 

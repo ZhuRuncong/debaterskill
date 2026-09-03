@@ -136,11 +136,11 @@ class Tab:
                   for t, sc in zip(teams, scored)]
 
         if self.between == 'speaks':
-            # One continuous ballot over all scored speakers encodes the team
+            # One continuous observation over all scored speakers encodes the team
             # result (ranking follows total speaks; `points` are ignored
             # here), the margins and the partner gaps at once. Complete
             # rooms only; partial scores would bias it, so incomplete rooms
-            # fall through to the ordinal team ballot.
+            # fall through to the ordinal team observation.
             if all(len(sc) == 2 for sc in scored):
                 lineups, scores = [], []
                 for team, sc in zip(teams, scored):
@@ -193,14 +193,14 @@ class Tab:
                 # where it would only widen the gap.
                 chaired = debate.chair is not None and tag != 'speaker'
                 noise = self.judge_blur.get(debate.chair, 0.0) if chaired else 0.0
-                self._core.add_ballot(debate.day, lineups, scores, continuous, p_draw,
+                self._core.add_observation(debate.day, lineups, scores, continuous, p_draw,
                                      _TAGS[tag], noise)
                 if chaired:
                     self._judged.setdefault(debate.chair, []).append(
                         self._core.size() - 1)
         return self
 
-    def _ballot_member(self, m):
+    def _observation_member(self, m):
         if isinstance(m, str):
             return self._enroll(Speaker(m))
         if isinstance(m, tuple):
@@ -208,11 +208,11 @@ class Tab:
             return self._enroll_motion(motion, side)
         return self._enroll(m)
 
-    def add_ballot(self, lineups, scores, day=0, continuous=False, p_draw=0.0, tag='raw'):
+    def add_observation(self, lineups, scores, day=0, continuous=False, p_draw=0.0, tag='raw'):
         """Add one pre-decomposed observation; members are names, entities, or
         (Motion, side) tuples. Returns self."""
-        keys = [[self._ballot_member(m) for m in lineup] for lineup in lineups]
-        self._core.add_ballot(day, keys, [float(s) for s in scores], continuous, p_draw,
+        keys = [[self._observation_member(m) for m in lineup] for lineup in lineups]
+        self._core.add_observation(day, keys, [float(s) for s in scores], continuous, p_draw,
                              _TAGS[tag])
         return self
 

@@ -6,18 +6,18 @@ namespace py = pybind11;
 using namespace ds;
 
 PYBIND11_MODULE(_core, m) {
-    m.def("sweep_hist", []() { return Ballot::sweep_hist; });
+    m.def("sweep_hist", []() { return Observation::sweep_hist; });
     m.def("reset_sweep_hist", []() {
-        std::fill(Ballot::sweep_hist.begin(), Ballot::sweep_hist.end(), 0LL);
+        std::fill(Observation::sweep_hist.begin(), Observation::sweep_hist.end(), 0LL);
     });
     m.def("set_sweeps", [](int max_sweeps, double tol) {
-        if (max_sweeps < 1 || max_sweeps > Ballot::kSweepCap)
+        if (max_sweeps < 1 || max_sweeps > Observation::kSweepCap)
             throw std::invalid_argument("max_sweeps out of range");
-        Ballot::max_sweeps = max_sweeps;
-        Ballot::sweep_tol = tol;
+        Observation::max_sweeps = max_sweeps;
+        Observation::sweep_tol = tol;
     }, py::arg("max_sweeps"), py::arg("tol"));
     m.def("get_sweeps", []() {
-        return py::make_tuple(Ballot::max_sweeps, Ballot::sweep_tol);
+        return py::make_tuple(Observation::max_sweeps, Observation::sweep_tol);
     });
 
     py::class_<Gaussian>(m, "Gaussian")
@@ -40,7 +40,7 @@ PYBIND11_MODULE(_core, m) {
         });
 
     m.def(
-        "ballot",
+        "observation",
         [](const std::vector<std::vector<std::tuple<double, double, double>>>& lineups,
            const std::vector<double>& scores, bool continuous, double p_draw,
            double p_chaos) {
@@ -50,7 +50,7 @@ PYBIND11_MODULE(_core, m) {
                 for (const auto& [mu, sigma, beta] : lineup)
                     lu.back().push_back({Gaussian(mu, sigma), beta});
             }
-            Ballot c(lu, scores, continuous, p_draw, 0.0, p_chaos);
+            Observation c(lu, scores, continuous, p_draw, 0.0, p_chaos);
             std::vector<std::vector<std::pair<double, double>>> lik;
             for (const auto& row : c.likelihoods) {
                 lik.emplace_back();
@@ -67,7 +67,7 @@ PYBIND11_MODULE(_core, m) {
              py::arg("period_days"), py::arg("p_chaos") = 0.0)
         .def("set_p_chaos", &Tab::set_p_chaos)
         .def("enroll", &Tab::enroll)
-        .def("add_ballot", &Tab::add_ballot, py::arg("day"), py::arg("lineups"),
+        .def("add_observation", &Tab::add_observation, py::arg("day"), py::arg("lineups"),
              py::arg("scores"), py::arg("continuous") = false, py::arg("p_draw") = 0.0,
              py::arg("tag") = 3, py::arg("noise") = 0.0)
         .def("set_noise", &Tab::set_noise, py::arg("i"), py::arg("noise"))

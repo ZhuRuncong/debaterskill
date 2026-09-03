@@ -6,7 +6,7 @@ import pytest
 
 ttt = pytest.importorskip('trueskillthroughtime')
 
-from debaterskill import ballot
+from debaterskill import observation
 from debaterskill import _core
 from debaterskill._core import TabCore
 
@@ -33,7 +33,7 @@ def check_game(teams_ms, result, obs, p_draw, tol=TOL, label=''):
                  for t in teams_ms]
     g = ttt.Game(ref_teams, list(result), p_draw,
                  obs='Continuous' if obs == 'C' else 'Ordinal')
-    ev, lik = ballot(teams_ms, list(result), obs == 'C', p_draw)
+    ev, lik = observation(teams_ms, list(result), obs == 'C', p_draw)
     assert close(ev, g.evidence, tol), f'{label} evidence {ev} vs {g.evidence}'
     for t in range(len(teams_ms)):
         for i in range(len(teams_ms[t])):
@@ -118,7 +118,7 @@ def check_history(comp, res, times, obs, mu, sigma, beta, gamma, priors=None,
     for k, (m, s, b, g) in (priors or {}).items():
         core.enroll(k, m, s, b, g)
     for c, r, t, o in zip(comp, res, times, obs):
-        core.add_ballot(t, c, r, o == 'Continuous', 0.0, 3)
+        core.add_observation(t, c, r, o == 'Continuous', 0.0, 3)
     core.fit(iterations, 1e-30, False)
 
     assert close(core.log_evidence(-1), h.log_evidence(), tol), \
@@ -165,8 +165,8 @@ def test_week_period():
     games = [(0, [['a'], ['b']]), (2, [['a'], ['c']]), (9, [['b'], ['c']]),
              (16, [['a'], ['b']])]
     for day, c in games:
-        core_d.add_ballot(day, c, [1.0, 0.0], False, 0.0, 3)
-        core_w.add_ballot(day, c, [1.0, 0.0], False, 0.0, 3)
+        core_d.add_observation(day, c, [1.0, 0.0], False, 0.0, 3)
+        core_w.add_observation(day, c, [1.0, 0.0], False, 0.0, 3)
     core_d.fit(8, 1e-8, False)
     core_w.fit(8, 1e-8, False)
     days_d = {t for pts in core_d.curves().values() for t, *_ in pts}

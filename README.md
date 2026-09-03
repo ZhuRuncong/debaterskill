@@ -62,7 +62,7 @@ speak values into skill units. `Team(speakers=['x'], iron=True)` is a lone
 speaker who gave both speeches and counts twice; `Team(name='Swing A')`
 without speakers is rated as one atomic entity.
 
-**Modes.** `between='ordinal'` scores the team ranking as one ballot
+**Modes.** `between='ordinal'` scores the team ranking as one observation
 (`'speaks'` instead fits the raw scores of fully scored rooms).
 `within='gap'` splits credit between partners by their score gap
 (`'ordinal'` uses only its direction, `None` uses team credit only). `motions=True`

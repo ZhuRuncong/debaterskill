@@ -11,7 +11,7 @@ def team(names, side=None, points=None, speaks=None, advancing=None):
                 advancing=advancing)
 
 
-def ballots(tab, debate):
+def observations(tab, debate):
     return list(tab._decompose(debate))
 
 
@@ -47,7 +47,7 @@ def test_outround_partial_order():
                   team(['b1', 'b2'], advancing=False),
                   team(['c1', 'c2'], advancing=True),
                   team(['d1', 'd2'], advancing=False)], day=0)
-    cs = ballots(tab, d)
+    cs = observations(tab, d)
     assert len(cs) == 4
     assert all(sc == [1.0, 0.0] and not cont for _, sc, cont, _, tag in cs)
     assert all(tag == 'outround' for *_, tag in cs)
@@ -63,25 +63,25 @@ def test_within_gate_and_modes():
                        team(['d1', 'd2'], points=0, speaks=d_speaks)],
                       day=0, scale=2.0)
     gap = Tab(within='gap')
-    cs = ballots(gap, room([67, 66]))
+    cs = observations(gap, room([67, 66]))
     assert sum(1 for c in cs if c[4] == 'speaker') == 4
     assert all(c[2] for c in cs if c[4] == 'speaker')
     assert [c for c in cs if c[4] == 'speaker'][0][1] == [35.5, 35.0]
-    cs = ballots(gap, room([67, None]))
+    cs = observations(gap, room([67, None]))
     assert sum(1 for c in cs if c[4] == 'speaker') == 0
     assert sum(1 for c in cs if c[4] == 'team') == 1
 
     tie = Tab(within='ordinal', within_p_draw=0.0)
-    cs = ballots(tie, room([67, 66]))
+    cs = observations(tie, room([67, 66]))
     spk = [c for c in cs if c[4] == 'speaker']
     assert len(spk) == 3 and not any(c[2] for c in spk)
     tie2 = Tab(within='ordinal', within_p_draw=0.3)
-    assert sum(1 for c in ballots(tie2, room([67, 66])) if c[4] == 'speaker') == 4
+    assert sum(1 for c in observations(tie2, room([67, 66])) if c[4] == 'speaker') == 4
 
     speaks = Tab(between='speaks')
-    cs = ballots(speaks, room([67, 66]))
+    cs = observations(speaks, room([67, 66]))
     assert len(cs) == 1 and len(cs[0][0]) == 8 and cs[0][2]
-    cs = ballots(speaks, room([67, None]))
+    cs = observations(speaks, room([67, None]))
     assert len(cs) == 1 and len(cs[0][0]) == 4 and not cs[0][2]
 
 
@@ -93,7 +93,7 @@ def test_motion_placement():
                 team(['c1', 'c2'], side='cg', points=1, speaks=[69, 68]),
                 team(['d1', 'd2'], side='co', points=0, speaks=[67, 66])],
                day=0, motion=m)
-    cs = ballots(tab, d)
+    cs = observations(tab, d)
     spk = [c for c in cs if c[4] == 'speaker']
     tm = [c for c in cs if c[4] == 'team']
     assert all(all(len(lu) == 1 for lu in c[0]) for c in spk)

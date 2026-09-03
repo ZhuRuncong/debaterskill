@@ -12,10 +12,10 @@ struct Performer {
 
 using Lineups = std::vector<std::vector<Performer>>;
 
-// One ballot: a single observation ranking several lineups. From the cavity
-// priors it computes the ballot's evidence and one likelihood message per
+// One observation: a single observation ranking several lineups. From the cavity
+// priors it computes the observation's evidence and one likelihood message per
 // performer.
-class Ballot {
+class Observation {
 public:
     double evidence = 1.0;
     std::vector<std::vector<Gaussian>> likelihoods;
@@ -28,13 +28,13 @@ public:
     static inline std::vector<long long> sweep_hist =
         std::vector<long long>(kSweepCap + 1, 0);
 
-    Ballot(const Lineups& lineups, const std::vector<double>& scores,
+    Observation(const Lineups& lineups, const std::vector<double>& scores,
           bool continuous, double p_draw, double noise = 0.0,
           double p_chaos = 0.0)
         : lineups_(lineups), scores_(scores), continuous_(continuous),
           noise_(noise), p_chaos_(p_chaos) {
         size_t n = lineups.size();
-        if (n < 2) throw std::invalid_argument("a ballot needs at least 2 lineups");
+        if (n < 2) throw std::invalid_argument("a observation needs at least 2 lineups");
         if (n != scores.size())
             throw std::invalid_argument("lineups and scores must match");
         for (const auto& lineup : lineups)

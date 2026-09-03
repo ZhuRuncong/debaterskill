@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <string>
 #include <unordered_map>
-#include "ballot.hpp"
+#include "observation.hpp"
 
 namespace ds {
 
@@ -13,7 +13,7 @@ struct Entity {
     double gamma;
 };
 
-struct BallotSpec {
+struct ObservationSpec {
     int day;
     std::vector<std::vector<uint32_t>> lineups;
     std::vector<double> scores;
@@ -54,7 +54,7 @@ public:
         entities_[intern(key)] = {Gaussian(mu, sigma), beta, gamma};
     }
 
-    void add_ballot(int day, const std::vector<std::vector<std::string>>& lineups,
+    void add_observation(int day, const std::vector<std::vector<std::string>>& lineups,
                    const std::vector<double>& scores, bool continuous, double p_draw,
                    int tag, double noise) {
         if (lineups.size() < 2) throw std::invalid_argument("need at least 2 lineups");
@@ -63,7 +63,7 @@ public:
         if (noise < 0.0) throw std::invalid_argument("noise must be >= 0");
         // Chaos is a mixture over rankings; a continuous observation has no
         // ranking to scramble, so it stays clean.
-        BallotSpec spec{day, {}, scores, continuous, p_draw, tag, noise,
+        ObservationSpec spec{day, {}, scores, continuous, p_draw, tag, noise,
                        continuous ? 0.0 : p_chaos_};
         for (const auto& lineup : lineups) {
             if (lineup.empty()) throw std::invalid_argument("empty lineup");
@@ -82,15 +82,15 @@ public:
         specs_.at(i).noise = noise;
     }
 
-    // Leave-one-out log evidence of ballot i under a candidate noise, scored
+    // Leave-one-out log evidence of observation i under a candidate noise, scored
     // against the fitted state with i's own messages divided out.
     double evidence_at(size_t i, double noise) const {
         if (batches_.empty()) throw std::runtime_error("fit before evidence_at");
         auto [b, e] = where_.at(i);
         const Batch& batch = batches_[b];
-        const BallotSpec& spec = specs_[i];
+        const ObservationSpec& spec = specs_[i];
         Lineups lu = cavity(batch, batch.events[e]);
-        Ballot c(lu, spec.scores, spec.continuous, spec.p_draw, noise, spec.p_chaos);
+        Observation c(lu, spec.scores, spec.continuous, spec.p_draw, noise, spec.p_chaos);
         return std::log(std::max(c.evidence, 1e-300));
     }
 
@@ -171,7 +171,7 @@ public:
                 }
             }
         }
-        Ballot c(lu, scores, continuous, p_draw, noise,
+        Observation c(lu, scores, continuous, p_draw, noise,
                 continuous ? 0.0 : p_chaos_);
         return std::log(std::max(c.evidence, 1e-300));
     }
@@ -207,7 +207,7 @@ private:
     std::unordered_map<std::string, uint32_t> ids_;
     std::vector<std::string> keys_;
     std::vector<Entity> entities_;
-    std::vector<BallotSpec> specs_;
+    std::vector<ObservationSpec> specs_;
     std::vector<Batch> batches_;
     std::vector<std::pair<uint32_t, uint32_t>> where_;
     std::unordered_map<uint32_t, std::pair<int, Gaussian>> final_;
@@ -285,9 +285,9 @@ private:
 
     std::pair<double, double> refresh(Batch& b, size_t e) {
         const Event& ev = b.events[e];
-        const BallotSpec& spec = specs_[ev.spec];
+        const ObservationSpec& spec = specs_[ev.spec];
         Lineups lu = cavity(b, ev);
-        Ballot c(lu, spec.scores, spec.continuous, spec.p_draw, spec.noise,
+        Observation c(lu, spec.scores, spec.continuous, spec.p_draw, spec.noise,
                 spec.p_chaos);
         b.evid[e] = c.evidence;
         std::pair<double, double> step{0.0, 0.0};
