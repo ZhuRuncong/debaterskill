@@ -29,9 +29,10 @@ struct ObservationSpec {
 class Tab {
 public:
     Tab(double mu, double sigma, double beta, double gamma, int period_days,
-        double p_chaos = 0.0)
+        double p_chaos = 0.0, bool revert = true)
         : mu0_(mu), sigma0_(sigma), beta0_(beta), gamma0_(gamma),
-          period_(period_days < 1 ? 1 : period_days), p_chaos_(p_chaos) {}
+          period_(period_days < 1 ? 1 : period_days), p_chaos_(p_chaos),
+          revert_(revert) {}
 
     void set_p_chaos(double v) {
         if (v < 0.0 || v >= 1.0)
@@ -165,9 +166,9 @@ public:
                     lu.back().push_back({ent.prior, ent.beta});
                 } else {
                     double elapsed = std::fabs(static_cast<double>(pday - st->second.first));
-                    double drift =
-                        std::min(std::sqrt(elapsed) * ent.gamma, 1.67 * sigma0_);
-                    lu.back().push_back({st->second.second + Gaussian(0.0, drift), ent.beta});
+                    lu.back().push_back(
+                        {drift(st->second.second, elapsed, ent.gamma, ent.prior, true),
+                         ent.beta});
                 }
             }
         }
@@ -204,6 +205,7 @@ private:
     double mu0_, sigma0_, beta0_, gamma0_;
     int period_;
     double p_chaos_ = 0.0;
+    bool revert_ = true;
     std::unordered_map<std::string, uint32_t> ids_;
     std::vector<std::string> keys_;
     std::vector<Entity> entities_;
@@ -303,16 +305,36 @@ private:
         return step;
     }
 
+    // Skill drift between appearances: an Ornstein-Uhlenbeck process reverting to
+    // the prior with timescale tau = 2*sigma0^2/gamma^2 (phi=exp(-elapsed/tau)), so
+    // long gaps floor the marginal at the prior; revert_=false is the plain TTT walk.
+    // forward and backward differ: one propagates a distribution, the other a likelihood.
+    Gaussian drift(const Gaussian& m, double elapsed, double gamma,
+                   const Gaussian& prior, bool forward) const {
+        if (elapsed == 0.0 || gamma == 0.0) return m;
+        if (!revert_ || !(prior.sigma < INF)) {
+            double d = std::min(std::sqrt(elapsed) * gamma, 1.67 * sigma0_);
+            return m + Gaussian(0.0, d);
+        }
+        double s0 = prior.sigma;
+        double phi = std::exp(-elapsed * gamma * gamma / (2.0 * s0 * s0));
+        if (forward)
+            return {prior.mu + phi * (m.mu - prior.mu),
+                    std::sqrt(phi * phi * m.sigma * m.sigma +
+                              s0 * s0 * (1.0 - phi * phi))};
+        if (phi < 1e-9) return NINF;   // the future says ~nothing about the far past
+        return {prior.mu + (m.mu - prior.mu) / phi,
+                std::sqrt((m.sigma * m.sigma + s0 * s0 * (1.0 - phi * phi)) /
+                          (phi * phi))};
+    }
+
     Gaussian receive(const SkillNode& node, int now,
                      const std::unordered_map<uint32_t, Gaussian>& msg,
-                     const std::unordered_map<uint32_t, int>& when) const {
-        const Gaussian& m = msg.at(node.entity);
+                     const std::unordered_map<uint32_t, int>& when,
+                     bool forward) const {
         double elapsed = std::fabs(static_cast<double>(now - when.at(node.entity)));
-        // The added drift SD is capped at 1.67*sigma0 so the inflation from
-        // a single absence is bounded.
-        double drift =
-            std::min(std::sqrt(elapsed) * entities_[node.entity].gamma, 1.67 * sigma0_);
-        return m + Gaussian(0.0, drift);
+        const Entity& ent = entities_[node.entity];
+        return drift(msg.at(node.entity), elapsed, ent.gamma, ent.prior, forward);
     }
 
     std::pair<double, double> forward_pass() {
@@ -322,7 +344,7 @@ private:
         for (Batch& b : batches_) {
             for (SkillNode& node : b.skills)
                 node.forward = msg.count(node.entity)
-                                   ? receive(node, b.time, msg, when)
+                                   ? receive(node, b.time, msg, when, true)
                                    : entities_[node.entity].prior + Gaussian(0.0, 0.0);
             for (size_t e = 0; e < b.events.size(); ++e) {
                 auto s = refresh(b, e);
@@ -351,7 +373,7 @@ private:
         for (size_t bi = batches_.size() - 1; bi-- > 0;) {
             Batch& b = batches_[bi];
             for (SkillNode& node : b.skills)
-                if (msg.count(node.entity)) node.backward = receive(node, b.time, msg, when);
+                if (msg.count(node.entity)) node.backward = receive(node, b.time, msg, when, false);
             for (size_t e = 0; e < b.events.size(); ++e) {
                 auto s = refresh(b, e);
                 step.first = std::max(step.first, s.first);

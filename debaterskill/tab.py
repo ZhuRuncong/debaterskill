@@ -26,7 +26,8 @@ class Tab:
 
     def __init__(self, mu=0.0, sigma=3.0, beta=1.0, gamma=0.04,
                  between='ordinal', within='gap', p_draw=0.0, within_p_draw=0.0,
-                 motions=True, motion_sigma=1.0, period='date', p_chaos=0.0):
+                 motions=True, motion_sigma=1.0, period='date', p_chaos=0.0,
+                 revert=True):
         if between not in ('ordinal', 'speaks'):
             raise ValueError("between must be 'ordinal' or 'speaks'")
         if within not in (None, 'none', 'ordinal', 'gap'):
@@ -44,8 +45,9 @@ class Tab:
         self.motion_sigma = motion_sigma
         self.period = period
         self.p_chaos = p_chaos
+        self.revert = revert
         self._core = TabCore(mu, sigma, beta, gamma, 7 if period == 'week' else 1,
-                             p_chaos)
+                             p_chaos, revert)
         self._enrolled = set()
         self.judge_blur = {}
         self._judged = {}
