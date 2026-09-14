@@ -3,7 +3,7 @@
 TrueSkill Through Time, rebuilt for British Parliamentary debating. Every
 speaker carries a Gaussian skill that drifts over time; every room is a noisy
 observation of the skills inside it. Team rankings, speaker-score gaps,
-elimination results, motion side offsets, and chair accuracy all enter one
+elimination results, and motion side offsets, all enter one
 inference pass, and every rating comes out as a posterior with a stated
 uncertainty. Python API, C++ core.
 
