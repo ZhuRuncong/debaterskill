@@ -74,16 +74,15 @@ probability and a robustness mixture, both 0 by default.
 entity with `tab.enroll(Speaker('ana', mu=2.0, sigma=1.0))` or by passing
 constructed `Speaker` objects on first appearance.
 
-**Drift.** Between appearances skill follows an Ornstein-Uhlenbeck process
-whose stationary law is the entity's own prior `N(mu, sigma)`: it reverts
-toward that prior with timescale `2·sigma²/gamma²`. Short gaps grow the
-variance by about `gamma²` per elapsed day, matching a plain random walk;
-long gaps floor the marginal at the prior, so a returning speaker is never
-rated as *more* uncertain (or, in the mean, as far from the field) than a
-newcomer — which an unbounded walk would wrongly imply. `Tab(revert=False)`
-restores the plain TrueSkill Through Time random walk (variance growing
-without bound, drift SD capped at `1.67·sigma`); `tests/test_reference.py`
-pins that regime as a differential test against the reference implementation.
+**Drift.** Between appearances the skill *mean* is a plain random walk — an
+absence never rewrites the estimate — while its variance grows by about
+`gamma²` per elapsed day. By default the drifted SD is capped at the entity's
+prior `sigma`, so a returning speaker is never rated as *more* uncertain than
+a newcomer (the way Glicko caps its rating deviation); short gaps, where the
+cap does not bind, are unaffected. `Tab(bound_sigma=False)` restores the plain
+TrueSkill Through Time walk, whose SD grows without bound (its per-gap SD
+capped at `1.67·sigma`); `tests/test_reference.py` pins that regime as a
+differential test against the reference implementation.
 
 **Judges (experimental).** Not a standard feature; the blur model is
 unvalidated and its estimates are noisy for chairs with few rooms. Do not

@@ -29,10 +29,10 @@ struct ObservationSpec {
 class Tab {
 public:
     Tab(double mu, double sigma, double beta, double gamma, int period_days,
-        double p_chaos = 0.0, bool revert = true)
+        double p_chaos = 0.0, bool bound_sigma = true)
         : mu0_(mu), sigma0_(sigma), beta0_(beta), gamma0_(gamma),
           period_(period_days < 1 ? 1 : period_days), p_chaos_(p_chaos),
-          revert_(revert) {}
+          bound_sigma_(bound_sigma) {}
 
     void set_p_chaos(double v) {
         if (v < 0.0 || v >= 1.0)
@@ -205,7 +205,7 @@ private:
     double mu0_, sigma0_, beta0_, gamma0_;
     int period_;
     double p_chaos_ = 0.0;
-    bool revert_ = true;
+    bool bound_sigma_ = true;
     std::unordered_map<std::string, uint32_t> ids_;
     std::vector<std::string> keys_;
     std::vector<Entity> entities_;
@@ -305,27 +305,26 @@ private:
         return step;
     }
 
-    // Skill drift between appearances: an Ornstein-Uhlenbeck process reverting to
-    // the prior with timescale tau = 2*sigma0^2/gamma^2 (phi=exp(-elapsed/tau)), so
-    // long gaps floor the marginal at the prior; revert_=false is the plain TTT walk.
-    // forward and backward differ: one propagates a distribution, the other a likelihood.
+    // Skill drift between appearances. The mean is a plain random walk (an
+    // absence never rewrites the skill estimate); variance grows by
+    // ~elapsed*gamma^2. With bound_sigma_ (the default) the forward message's
+    // SD is capped at the prior sigma, so a returning entity is never rated as
+    // more uncertain than a newcomer (as Glicko caps its RD). Since the
+    // posterior is a product of factors, capping the forward marginal floors
+    // the posterior SD too. The backward message is a likelihood, not a
+    // marginal - it is legitimately wide - so it is never capped, only widened
+    // by the drift. bound_sigma_=false is the plain TrueSkill-Through-Time walk
+    // (symmetric, per-gap SD capped at 1.67*sigma0), pinned by the reference test.
     Gaussian drift(const Gaussian& m, double elapsed, double gamma,
                    const Gaussian& prior, bool forward) const {
         if (elapsed == 0.0 || gamma == 0.0) return m;
-        if (!revert_ || !(prior.sigma < INF)) {
+        if (!bound_sigma_ || !(prior.sigma < INF)) {
             double d = std::min(std::sqrt(elapsed) * gamma, 1.67 * sigma0_);
             return m + Gaussian(0.0, d);
         }
-        double s0 = prior.sigma;
-        double phi = std::exp(-elapsed * gamma * gamma / (2.0 * s0 * s0));
-        if (forward)
-            return {prior.mu + phi * (m.mu - prior.mu),
-                    std::sqrt(phi * phi * m.sigma * m.sigma +
-                              s0 * s0 * (1.0 - phi * phi))};
-        if (phi < 1e-9) return NINF;   // the future says ~nothing about the far past
-        return {prior.mu + (m.mu - prior.mu) / phi,
-                std::sqrt((m.sigma * m.sigma + s0 * s0 * (1.0 - phi * phi)) /
-                          (phi * phi))};
+        double var = m.sigma * m.sigma + elapsed * gamma * gamma;
+        if (forward) var = std::min(var, prior.sigma * prior.sigma);
+        return {m.mu, std::sqrt(var)};
     }
 
     Gaussian receive(const SkillNode& node, int now,

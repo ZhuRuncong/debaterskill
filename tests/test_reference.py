@@ -1,8 +1,8 @@
 """Differential test against trueskillthroughtime.
 
 Pinned to the reference's regime on both axes debaterskill diverges by default:
-the fixed-5-sweep loopy chain (set_sweeps) and the plain random walk between
-appearances (revert=False), rather than the default OU reversion.
+the fixed-5-sweep loopy chain (set_sweeps) and the unbounded random walk between
+appearances (bound_sigma=False), rather than the default sigma-capped walk.
 """
 import math
 import random
@@ -119,7 +119,7 @@ def check_history(comp, res, times, obs, mu, sigma, beta, gamma, priors=None,
                     gamma=gamma, p_draw=0.0, obs=obs, priors=ref_priors or None)
     h.convergence(iterations=iterations, epsilon=1e-30, verbose=False)
 
-    core = TabCore(mu, sigma, beta, gamma, 1, 0.0, False)
+    core = TabCore(mu, sigma, beta, gamma, 1, 0.0, False)  # unbounded walk
     for k, (m, s, b, g) in (priors or {}).items():
         core.enroll(k, m, s, b, g)
     for c, r, t, o in zip(comp, res, times, obs):

@@ -64,7 +64,8 @@ PYBIND11_MODULE(_core, m) {
     py::class_<Tab>(m, "TabCore")
         .def(py::init<double, double, double, double, int, double, bool>(), py::arg("mu"),
              py::arg("sigma"), py::arg("beta"), py::arg("gamma"),
-             py::arg("period_days"), py::arg("p_chaos") = 0.0, py::arg("revert") = true)
+             py::arg("period_days"), py::arg("p_chaos") = 0.0,
+             py::arg("bound_sigma") = true)
         .def("set_p_chaos", &Tab::set_p_chaos)
         .def("enroll", &Tab::enroll)
         .def("add_observation", &Tab::add_observation, py::arg("day"), py::arg("lineups"),
